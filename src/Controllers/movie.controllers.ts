@@ -24,6 +24,20 @@ export async function insertMovie(req: Request, res: Response ) {
         console.log(error);
         res.sendStatus(500);
     }
-   
 }
+   
+
+    export async function listaMovies(req: Request, res: Response ) {
+                          
+        try{
+           const {rows} = await connection.query(`
+            SELECT * 
+            FROM movie  
+            `)
+         return res.send(rows);  
+        }catch(error){
+            console.log(error);
+            res.sendStatus(500);
+        }
+   }
 
