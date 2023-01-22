@@ -25,7 +25,6 @@ export async function insertMovie(req: Request, res: Response ) {
         res.sendStatus(500);
     }
 }
-   
 
     export async function listaMovies(req: Request, res: Response ) {
                           
@@ -41,3 +40,35 @@ export async function insertMovie(req: Request, res: Response ) {
         }
    }
 
+
+   export async function atualizaMovie(req: Request, res: Response ) {
+       
+    const movie = req.body as Movie
+
+        try{
+            const {rows} = await connection.query(`
+            SELECT * 
+            FROM movie 
+            WHERE name = $1 
+            `, [movie.name])
+
+            if(rows.length < 1){
+                return res.sendStatus(406)
+            }
+
+            await connection.query(`
+            UPDATE movie
+            SET "name" = $1,
+                image = $2,
+                director = $3,
+                score = $4 
+            WHERE "name" = $1
+            `, [movie.name, movie.image, movie.director, movie.score])
+
+            res.sendStatus(201)
+        }catch(error){
+            console.log(error);
+            res.sendStatus(500);
+        }
+
+   }
