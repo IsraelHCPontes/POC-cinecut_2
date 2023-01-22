@@ -1,10 +1,10 @@
 import { Router } from "express";
-import {insertMovie, listaMovies, atualizaMovie} from '../Controllers/movie.controllers.js'
+import {insertMovie, listaMovies, atualizaMovie,deletaMovie} from '../Controllers/movie.controllers.js'
 
 const router = Router();
 
-router.post("/movie", insertMovie)
+router.post("/movies", insertMovie)
 router.get("/movies", listaMovies)
-router.put("/movie", atualizaMovie)
-
+router.put("/movies", atualizaMovie)
+router.delete("/movies", deletaMovie)
 export default router

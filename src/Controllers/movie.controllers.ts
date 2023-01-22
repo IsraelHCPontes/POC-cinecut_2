@@ -72,3 +72,33 @@ export async function insertMovie(req: Request, res: Response ) {
         }
 
    }
+
+
+   export async function deletaMovie(req: Request, res: Response ) {
+    const movie = req.body as Movie
+
+    try{
+        const {rows} = await connection.query(`
+        SELECT * 
+        FROM movie 
+        WHERE name = $1 
+        `, [movie.name])
+
+        if(rows.length < 1){
+            return res.sendStatus(406)
+        }
+
+        await connection.query(`
+        DELETE FROM movie
+        WHERE "name" = $1
+        `, [movie.name])
+
+        res.sendStatus(201)
+    }catch(error){
+        console.log(error);
+        res.sendStatus(500);
+    }
+}
+
+
+
