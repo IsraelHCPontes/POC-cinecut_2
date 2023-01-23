@@ -28,8 +28,6 @@ export async function insertMovie(req: Request, res: Response ) {
 
     export async function listaMovies(req: Request, res: Response ) {
         const query = req.query;
-        console.log(query.director)
-        
       if(query.director === undefined){
         try{
             const {rows} = await connection.query(`
