@@ -27,18 +27,34 @@ export async function insertMovie(req: Request, res: Response ) {
 }
 
     export async function listaMovies(req: Request, res: Response ) {
-                          
+        const query = req.query;
+        console.log(query.director)
+        
+      if(query.director === undefined){
         try{
-           const {rows} = await connection.query(`
-            SELECT * 
-            FROM movie  
-            `)
-         return res.send(rows);  
-        }catch(error){
-            console.log(error);
-            res.sendStatus(500);
-        }
+            const {rows} = await connection.query(`
+             SELECT * 
+             FROM movie  
+             `)
+          return res.send(rows);  
+         }catch(error){
+             console.log(error);
+             res.sendStatus(500);
+         }
+        }else{
+            try{ 
+                const {rows} = await connection.query(`
+                SELECT * 
+                FROM movie 
+                WHERE director LIKE $1 
+                `,[`%${query.director}%`])
+                return res.send(rows); 
+            }catch(error){
+                console.log(error);
+                res.sendStatus(500);
+        } 
    }
+}
 
 
    export async function atualizaMovie(req: Request, res: Response ) {
