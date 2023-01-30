@@ -1,11 +1,11 @@
 import {Request, Response} from 'express'
 import prisma from '../db/db.js'
-import { MovieSchema } from '../Schemas/movieSchema.js';
-import { Movie, newMovie , movieIsert} from '../protocols/Movie.js';
+import { DirectorSchema } from '../Schemas/directorSchema.js';
+import { newDirector , directorIsert} from '../protocols/director';
 
-export async function insertMovie(req: Request, res: Response ) {
-    const newMovie = req.body as movieIsert
-    const { error } = MovieSchema.validate(newMovie, {abortEarly: false})
+export async function insertDirector(req: Request, res: Response ) {
+    const newDirector = req.body as directorIsert
+    const { error } = DirectorSchema .validate(newDirector, {abortEarly: false})
 
     if(error){
         const erros = error.details.map(detail => detail.message)
@@ -13,8 +13,8 @@ export async function insertMovie(req: Request, res: Response ) {
     }
 
     try{
-        await prisma.movies.create({
-            data: newMovie 
+        await prisma.director.create({
+            data: newDirector
         })
     
     res.sendStatus(201);  
@@ -25,13 +25,13 @@ export async function insertMovie(req: Request, res: Response ) {
     }
 }
 
-    export async function listaMovies(req: Request, res: Response ) {
+    export async function listaDirector(req: Request, res: Response ) {
         const query = req.query;
 
         try{
-          const movies = await prisma.movies.findMany()
+          const director = await prisma.director.findMany()
 
-          res.send(movies.map(movie => movie));  
+          res.send(director.map(director => director));  
 
          }catch(error){
 
@@ -43,32 +43,28 @@ export async function insertMovie(req: Request, res: Response ) {
 
 
 
-   export async function atualizaMovie(req: Request, res: Response ) {
+   export async function atualizaDirector(req: Request, res: Response ) {
     const id = Number(req.params.id)
-    const movie = req.body as newMovie
+    const director = req.body as newDirector
 
-    const moviesAlready = await prisma.movies.findUnique({
+    const directorAlready = await prisma.director.findUnique({
         where: {
             id: id,
           },
     })
 
-    if(!moviesAlready){
+    if(!directorAlready){
         return res.status(401).send({message:'usuario n existe'})
     }
 
         try{
-            const updateMovie = await prisma.movies.update({
+            const updateMovie = await prisma.director.update({
                 where: {
                   id: id
                 },
                 data:{
-                    name: movie.name,
-                    image: movie.image,
-                    directorId: movie.directorId,
-                    studioId: movie.studioId,
-                    genre: movie.genre,
-                    score: movie.score,
+                    name: director.name,
+                    image: director.image,
                 },
               })
 
@@ -81,22 +77,22 @@ export async function insertMovie(req: Request, res: Response ) {
    }
 
 
-   export async function deletaMovie(req: Request, res: Response ) {
+   export async function deletaDirector(req: Request, res: Response ) {
     const id = Number(req.params.id)
 
-    const moviesAlready = await prisma.movies.findUnique({
+    const directorAlready = await prisma.director.findUnique({
         where: {
             id: id,
           },
     })
    
-    if(!moviesAlready){
+    if(!directorAlready){
         return res.status(401).send({message:'usuario n existe'})
     }
 
 
     try{
-        const deleteUser = await prisma.movies.delete({
+        const deleteUser = await prisma.director.delete({
             where: {
               id: id,
             },

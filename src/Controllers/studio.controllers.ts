@@ -1,11 +1,11 @@
 import {Request, Response} from 'express'
 import prisma from '../db/db.js'
-import { MovieSchema } from '../Schemas/movieSchema.js';
-import { Movie, newMovie , movieIsert} from '../protocols/Movie.js';
+import { StudioSchema } from '../Schemas/studioSchema.js';
+import { newStudio , studioIsert} from '../protocols/studio';
 
-export async function insertMovie(req: Request, res: Response ) {
-    const newMovie = req.body as movieIsert
-    const { error } = MovieSchema.validate(newMovie, {abortEarly: false})
+export async function insertStudio(req: Request, res: Response ) {
+    const newStudio = req.body as studioIsert
+    const { error } = StudioSchema .validate(newStudio, {abortEarly: false})
 
     if(error){
         const erros = error.details.map(detail => detail.message)
@@ -13,8 +13,8 @@ export async function insertMovie(req: Request, res: Response ) {
     }
 
     try{
-        await prisma.movies.create({
-            data: newMovie 
+        await prisma.studio.create({
+            data: newStudio
         })
     
     res.sendStatus(201);  
@@ -25,13 +25,13 @@ export async function insertMovie(req: Request, res: Response ) {
     }
 }
 
-    export async function listaMovies(req: Request, res: Response ) {
+    export async function listaStudio(req: Request, res: Response ) {
         const query = req.query;
 
         try{
-          const movies = await prisma.movies.findMany()
+          const studio = await prisma.studio.findMany()
 
-          res.send(movies.map(movie => movie));  
+          res.send(studio.map(studio => studio));  
 
          }catch(error){
 
@@ -43,32 +43,27 @@ export async function insertMovie(req: Request, res: Response ) {
 
 
 
-   export async function atualizaMovie(req: Request, res: Response ) {
+   export async function atualizaStudio(req: Request, res: Response ) {
     const id = Number(req.params.id)
-    const movie = req.body as newMovie
+    const studio = req.body as newStudio
 
-    const moviesAlready = await prisma.movies.findUnique({
+    const studioAlready = await prisma.studio.findUnique({
         where: {
             id: id,
           },
     })
 
-    if(!moviesAlready){
+    if(!studioAlready){
         return res.status(401).send({message:'usuario n existe'})
     }
 
         try{
-            const updateMovie = await prisma.movies.update({
+            const updateMovie = await prisma.studio.update({
                 where: {
                   id: id
                 },
                 data:{
-                    name: movie.name,
-                    image: movie.image,
-                    directorId: movie.directorId,
-                    studioId: movie.studioId,
-                    genre: movie.genre,
-                    score: movie.score,
+                    name: studio.name,
                 },
               })
 
@@ -81,22 +76,22 @@ export async function insertMovie(req: Request, res: Response ) {
    }
 
 
-   export async function deletaMovie(req: Request, res: Response ) {
+   export async function deletaStudio(req: Request, res: Response ) {
     const id = Number(req.params.id)
 
-    const moviesAlready = await prisma.movies.findUnique({
+    const studioAlready = await prisma.studio.findUnique({
         where: {
             id: id,
           },
     })
    
-    if(!moviesAlready){
+    if(!studioAlready){
         return res.status(401).send({message:'usuario n existe'})
     }
 
 
     try{
-        const deleteUser = await prisma.movies.delete({
+        const deleteUser = await prisma.studio.delete({
             where: {
               id: id,
             },
